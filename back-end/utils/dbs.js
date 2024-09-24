@@ -1,22 +1,12 @@
-const mysql = require('mysql');
 const { MongoClient } = require('mongodb');
+const connection = require('./knexfile');
 
 
-const { SQL_HOST, SQL_PASS, SQL_USER, SQL_DB_NAME, SQL_PORT, MONGO_URL, MONGO_DB_NAME } = process.env;
+const { MONGO_URL, MONGO_DB_NAME } = process.env;
 
 let mongoInstance = null;
 
-const knex = require('knex')({
-    client: 'mysql',
-    connection: {
-        host: SQL_HOST,
-        user: SQL_USER,
-        password: SQL_PASS,
-        database: SQL_DB_NAME,
-        port: SQL_PORT,
-    },
-    pool: { min: 0, max: 7 }
-})
+const knex = require('knex')(connection);
 
 const mongoIntl = async () => {
     try {
@@ -31,8 +21,19 @@ const mongoIntl = async () => {
     }
 }
 
+const checkSQLConnection = () => {
+    knex.raw('SELECT 1').then(() => {
+        console.log('SQL Connection established Successfully!');
+    }).catch((err) => {
+        console.error('Failed to Establish SQL Connection Error: ', err)
+    }).finally(() => {
+        knex.destroy();
+    })
+}
+
 module.exports = {
     mongoIntl,
     getSqlInstance: () => knex,
-    getMongoInstance: () => mongoInstance
-} 
+    getMongoInstance: () => mongoInstance,
+    checkConection: checkSQLConnection
+}
