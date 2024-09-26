@@ -1,12 +1,12 @@
 const { MongoClient } = require('mongodb');
-const connection = require('./knexfile');
+const connection = require('../knexfile');
 
 
 const { MONGO_URL, MONGO_DB_NAME } = process.env;
 
 let mongoInstance = null;
 
-const knex = require('knex')(connection);
+const knex = require('knex')(connection[process.env.NODE_ENV || 'development']);
 
 const mongoIntl = async () => {
     try {

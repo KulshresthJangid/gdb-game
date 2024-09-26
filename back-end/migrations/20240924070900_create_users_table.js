@@ -11,7 +11,7 @@ exports.up = function (knex) {
         table.enum('roles', ['SUPER_ADMIN', 'SUPER_ADMIN_SUPPORT', 'PLAYER']).notNullable();
         table.boolean('isVerfied').notNullable().defaultTo(false);
         table.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
-        table.timestamp('updated_at').notNullable().defaultTo(knex.fn.now()).alter();
+        table.timestamp('updated_at').notNullable().defaultTo(knex.fn.now());
         table.boolean('is_enabled').notNullable().defaultTo(true);
     });
 };

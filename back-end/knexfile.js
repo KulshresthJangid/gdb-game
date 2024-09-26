@@ -4,14 +4,16 @@
  * @type { Object.<string, import("knex").Knex.Config> }
  */
 module.exports = {
-
     development: {
         client: 'mysql',
         connection: {
-            filename: './utils/dbs'
+            database: 'bettingDB',
+            user: 'root',
+            password: 'root',
+            host: 'localhost',
+            port: '3309'
         }
     },
-
     staging: {
         client: 'mysql',
         connection: {
@@ -27,7 +29,6 @@ module.exports = {
             tableName: 'knex_migrations'
         }
     },
-
     production: {
         client: 'mysql',
         connection: {
