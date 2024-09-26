@@ -5,6 +5,11 @@ const AUTH_ROUTES = {
     TOKEN_VERIFY: '/api/v1/token-verify',
 }
 
+const TABLES = {
+    USERS: 'users'
+}
+
 module.exports = {
-    AUTH_ROUTES
+    AUTH_ROUTES, 
+    TABLES
 }

@@ -2,11 +2,13 @@ require('dotenv').config();
 
 const bodyParser = require('body-parser');
 const express = require('express');
-const { mongoIntl, getSqlInstance, checkConection } = require('./utils/dbs');
+const { mongoIntl, checkConection } = require('./utils/dbs');
+const { logger } = require('./middleware/logger');
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
+app.use(logger);
 
 app.listen(port, async () => {
     try {
