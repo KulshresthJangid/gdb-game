@@ -27,7 +27,7 @@ const checkSQLConnection = () => {
     }).catch((err) => {
         console.error('Failed to Establish SQL Connection Error: ', err)
     }).finally(() => {
-        knex.destroy();
+        // knex.destroy();
     })
 }
 

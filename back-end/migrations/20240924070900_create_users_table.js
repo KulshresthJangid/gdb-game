@@ -9,7 +9,7 @@ exports.up = function (knex) {
         table.string('name').notNullable();
         table.string('email').notNullable().unique();
         table.string('password').notNullable();
-        table.enum('roles', ['SUPER_ADMIN', 'SUPER_ADMIN_SUPPORT', 'PLAYER']).notNullable();
+        table.enum('role', ['SUPER_ADMIN', 'SUPER_ADMIN_SUPPORT', 'PLAYER']).notNullable();
         table.boolean('isVerfied').notNullable().defaultTo(false);
         table.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
         table.timestamp('updated_at').notNullable().defaultTo(knex.fn.now());

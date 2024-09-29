@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-export const generateAuthToken = async (user) => {
+const generateAuthToken = async (user) => {
     return new Promise((resolve, reject) => {
         jwt.sign(user, process.env.JWT_KEY, { algorithm: 'RS256', expiresIn: '1d' }, function (err, token) {
             if (err) {
@@ -13,7 +13,7 @@ export const generateAuthToken = async (user) => {
     })
 }
 
-export const getUserFromToken = async (token) => {
+const getUserFromToken = async (token) => {
     return new Promise((resolve, reject) => {
         jwt.verify(token, process.env.JWT_KEY, function (err, decoded) {
             if (err) {
@@ -25,7 +25,7 @@ export const getUserFromToken = async (token) => {
     })
 }
 
-export const hashPassword = async (password) => {
+const hashPassword = async (password) => {
     return new Promise((resolve, reject) => {
         bcrypt.genSalt(10, function (err, salt) {
             bcrypt.hash(password, salt, function (err, hash) {
@@ -39,7 +39,7 @@ export const hashPassword = async (password) => {
     })
 }
 
-export const isCorrectPassword = async (password, hash) => {
+const isCorrectPassword = async (password, hash) => {
     return new Promise((resolve, reject) => {
         bcrypt.compare(password, hash, function (err, res) {
             if (err) {
@@ -51,3 +51,7 @@ export const isCorrectPassword = async (password, hash) => {
         })
     })
 }
+
+
+module.exports = { generateAuthToken, getUserFromToken, hashPassword, isCorrectPassword }
+
