@@ -1,9 +1,12 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const randomstring = require('randomstring');
 
 const generateAuthToken = async (user) => {
     return new Promise((resolve, reject) => {
-        jwt.sign(user, process.env.JWT_KEY, { algorithm: 'RS256', expiresIn: '1d' }, function (err, token) {
+        console.log(process.env.JWT_KEY);
+        jwt.sign(user, process.env.JWT_KEY, { expiresIn: '1d' }, function (err, token) {
             if (err) {
                 reject(err);
             } else {
@@ -52,6 +55,13 @@ const isCorrectPassword = async (password, hash) => {
     })
 }
 
+const generateOTP = () => {
+    return randomstring.generate({
+        length: 6,
+        charset: 'numeric'
+    })
+}
 
-module.exports = { generateAuthToken, getUserFromToken, hashPassword, isCorrectPassword }
+
+module.exports = { generateAuthToken, getUserFromToken, hashPassword, isCorrectPassword, generateOTP }
 

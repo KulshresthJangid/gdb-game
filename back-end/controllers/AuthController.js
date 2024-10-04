@@ -1,15 +1,14 @@
 const { AUTH_ROUTES } = require('../Constants/APIs');
+const BaseController = require('./BaseController')
 const APIResponse = require('../DTOs/APIResponse');
 
 
 const UserModel = require('../models/UserModel');
+const { isCorrectPassword, generateAuthToken } = require('../utils/authUtils');
 
-const express = require('express');
-const router = express.Router();
-
-class AuthController {
+class AuthController extends BaseController {
     constructor() {
-        this.router = router;
+        super();
         this.initializeRoutes();
     }
 
@@ -22,16 +21,27 @@ class AuthController {
 
     async login(req, res) {
         const { email, password } = req.body;
-        console.log("sopmethign")
         const user = await UserModel.findByEmail(email);
-
-        res.status(200).send(user);
+        if (await isCorrectPassword(password, user.password)) {
+            if (user.isVerfied) {
+                res.status(200).send(new APIResponse(200, "User Logged In Successfully!!", { token: await generateAuthToken(user) }, true));
+            } else {
+                res.status(401).send(new APIResponse(401, "Pls Verify First!!", null, false));
+            }
+        } else {
+            res.status(401).send(new APIResponse(401, "Invalid email or Password!!", null, false))
+        }
     }
 
     async register(req, res) {
         let user = (({ name, email, password, role }) => ({ name, email, password, role }))(req.body);
         user = await UserModel.save(user);
         res.status(200).send(new APIResponse(200, "User registered successfully please Login!!", null, true));
+    }
+
+    async otpVerify(req, res) {
+        let user = this.getUser(req);
+        
     }
 }
 

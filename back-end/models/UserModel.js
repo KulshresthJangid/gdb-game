@@ -1,13 +1,13 @@
-const { TABLES } = require("../Constants/APIs");
+
 const { hashPassword } = require("../utils/authUtils");
-const { getSqlInstance } = require("../utils/dbs");
 
 const { v4: uuidv4 } = require('uuid');
+const BaseModel = require("./BaseModel");
+const { TABLES } = require("../Constants/APIs");
 
-class UserModel {
+class UserModel extends BaseModel {
     constructor() {
-        this.table = TABLES.USERS;
-        this.db = getSqlInstance();
+        super(TABLES.USERS);
     }
 
     async save(user) {
@@ -19,11 +19,13 @@ class UserModel {
         }
     }
 
-    findByEmail(email) {
+    async findByEmail(email) {
         try {
-            return this.db(TABLES.USERS).where({
-                email
-            }).first();
+            const user = await this.db(TABLES.USERS).where({ email }).first();
+            if (user) {
+                this.convertToBooleans(user);
+                return user;
+            }
         } catch (err) {
             console.log("Error while getting the user by email", err);
         }

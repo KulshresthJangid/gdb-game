@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const { generateOTP } = require('./authUtils');
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -8,19 +9,24 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: 'rulingtech2001@gmail.com',
-    subject: 'Hello from Nodejs',
-    html: '<h1>Your OTP is here 7878</h1>'
-}
+const sendOTPEmail = (toUser) => {
+    let otp = generateOTP();
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: toUser,
+        subject: 'Hello from Nodejs',
+        html: `<h1>Your OTP is here ${otp}</h1>`
+    };
 
-transporter.sendMail(mailOptions, (err, info) => {
-    if (err) {
-        console.log("error while sending the email", err);
-    } else {
-        console.log("Email sent succuessfyully ", info.response);
-    }
-})
+    transporter.sendMail(mailOptions, (err, info) => {
+        if (err) {
+            console.log("error while sending the email", err);
+        } else {
+            console.log("Email sent succuessfyully ", info.response);
+        }
+    });
+};
+
+module.exports = { sendOTPEmail }
 
 //https://stackoverflow.com/questions/39489229/pass-variable-to-html-template-in-nodemailer
