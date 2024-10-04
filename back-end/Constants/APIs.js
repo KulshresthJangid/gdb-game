@@ -6,10 +6,11 @@ const AUTH_ROUTES = {
 }
 
 const TABLES = {
-    USERS: 'users'
+    USERS: 'users',
+    OTP: 'otp'
 }
 
 module.exports = {
-    AUTH_ROUTES, 
+    AUTH_ROUTES,
     TABLES
 }
