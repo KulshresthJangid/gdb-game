@@ -9,6 +9,8 @@ exports.up = function (knex) {
         table.increments('id').primary().notNullable();
         table.foreign('user_id').references('id').inTable(TABLES.USERS);
         table.bigInteger('code').notNullable();
+        table.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
+        table.timestamp('updated_at').notNullable().defaultTo(knex.fn.now());
         table.boolean('is_enabled').notNullable().defaultTo(true);
     })
 };
