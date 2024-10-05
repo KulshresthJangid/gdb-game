@@ -5,6 +5,8 @@ const AUTH_ROUTES = {
     TOKEN_VERIFY: '/api/v1/token-verify',
 }
 
+const OPEN_ROUTES = [AUTH_ROUTES.LOGIN, AUTH_ROUTES.REGISTER, AUTH_ROUTES.OTP_VERIFY]; 
+
 const TABLES = {
     USERS: 'users',
     OTP: 'otp'
@@ -12,5 +14,6 @@ const TABLES = {
 
 module.exports = {
     AUTH_ROUTES,
-    TABLES
+    TABLES,
+    OPEN_ROUTES
 }

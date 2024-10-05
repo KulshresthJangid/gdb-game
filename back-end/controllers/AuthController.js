@@ -4,7 +4,9 @@ const APIResponse = require('../DTOs/APIResponse');
 
 
 const UserModel = require('../models/UserModel');
-const { isCorrectPassword, generateAuthToken } = require('../utils/authUtils');
+const { isCorrectPassword, generateAuthToken, hashPassword } = require('../utils/authUtils');
+const OTPModel = require('../models/OTPModel');
+const { sendOTPEmail } = require('../utils/mailer');
 
 class AuthController extends BaseController {
     constructor() {
@@ -15,33 +17,53 @@ class AuthController extends BaseController {
     initializeRoutes() {
         this.router.post(AUTH_ROUTES.LOGIN, this.login);
         this.router.post(AUTH_ROUTES.REGISTER, this.register);
-        // this.router.get(AUTH_ROUTES.OTP_VERIFY, this.otpVerify);
+        this.router.post(AUTH_ROUTES.OTP_VERIFY, this.otpVerify);
         // this.router.get(AUTH_ROUTES.TOKEN_VERIFY, this.verifyToken);
     }
 
     async login(req, res) {
         const { email, password } = req.body;
         const user = await UserModel.findByEmail(email);
+    
+        if (!user) {
+            return res.status(401).send(new APIResponse(401, "Invalid email or Password!!", null, false));
+        }
+    
+        console.log("Stored user password hash:", user.password);
+    
         if (await isCorrectPassword(password, user.password)) {
             if (user.isVerfied) {
-                res.status(200).send(new APIResponse(200, "User Logged In Successfully!!", { token: await generateAuthToken(user) }, true));
+                const token = await generateAuthToken(user);
+                return res.status(200).send(new APIResponse(200, "User Logged In Successfully!!", { token }, true));
             } else {
-                res.status(401).send(new APIResponse(401, "Pls Verify First!!", null, false));
+                return res.status(401).send(new APIResponse(401, "Please Verify First!!", null, false));
             }
         } else {
-            res.status(401).send(new APIResponse(401, "Invalid email or Password!!", null, false))
+            return res.status(401).send(new APIResponse(401, "Invalid email or Password!!", null, false));
         }
     }
 
     async register(req, res) {
         let user = (({ name, email, password, role }) => ({ name, email, password, role }))(req.body);
         user = await UserModel.save(user);
+        await sendOTPEmail(user);
         res.status(200).send(new APIResponse(200, "User registered successfully please Login!!", null, true));
     }
 
     async otpVerify(req, res) {
-        let user = this.getUser(req);
-        
+        let { otp, email } = req.body;
+        let user = await UserModel.findByEmail(email);
+        let otpDoc = await OTPModel.getActiveOtpByUserIdAndOTP(user.id, otp);
+        if (otpDoc) {
+            otpDoc.is_enabled = false;
+            user.isVerfied = true;
+            await OTPModel.save(otpDoc);
+            await UserModel.save(user);
+            res.status(201).send(new APIResponse(201, "User Verified successfully", null, true));
+        } else {
+            res.status(200).send(new APIResponse(400, "Please enter correct OTP!!", null, false));
+            return;
+        }
     }
 }
 

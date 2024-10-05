@@ -5,7 +5,6 @@ const randomstring = require('randomstring');
 
 const generateAuthToken = async (user) => {
     return new Promise((resolve, reject) => {
-        console.log(process.env.JWT_KEY);
         jwt.sign(user, process.env.JWT_KEY, { expiresIn: '1d' }, function (err, token) {
             if (err) {
                 reject(err);
@@ -16,10 +15,20 @@ const generateAuthToken = async (user) => {
     })
 }
 
+const validateAuthToken = async (token) => {
+    return new Promise((resolve, reject) => {
+        jwt.verify(token, process.env.JWT_KEY, function (err, result) {
+            if (err) resolve(false);
+            else resolve(true);
+        })
+    })
+}
+
 const getUserFromToken = async (token) => {
     return new Promise((resolve, reject) => {
         jwt.verify(token, process.env.JWT_KEY, function (err, decoded) {
             if (err) {
+                console.log("Errror while validating token");
                 reject(err);
             } else {
                 resolve(decoded);
@@ -49,6 +58,7 @@ const isCorrectPassword = async (password, hash) => {
                 console.log("Error while checking password", err);
                 reject(err);
             } else {
+                console.log("res, ", res)
                 resolve(res);
             }
         })
@@ -63,5 +73,5 @@ const generateOTP = () => {
 }
 
 
-module.exports = { generateAuthToken, getUserFromToken, hashPassword, isCorrectPassword, generateOTP }
+module.exports = { generateAuthToken, getUserFromToken, hashPassword, isCorrectPassword, generateOTP, validateAuthToken }
 
