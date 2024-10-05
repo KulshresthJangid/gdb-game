@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 const { generateOTP } = require('./authUtils');
+const OTPModel = require('../models/OTPModel');
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -9,11 +10,13 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const sendOTPEmail = (toUser) => {
+const sendOTPEmail = async (toUser) => {
     let otp = generateOTP();
+    let otpDoc = {user_id: toUser.id, code: otp};
+    await OTPModel.save(otpDoc);
     const mailOptions = {
         from: process.env.EMAIL_USER,
-        to: toUser,
+        to: toUser.email,
         subject: 'Hello from Nodejs',
         html: `<h1>Your OTP is here ${otp}</h1>`
     };

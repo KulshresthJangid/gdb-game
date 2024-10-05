@@ -12,8 +12,14 @@ class UserModel extends BaseModel {
 
     async save(user) {
         try {
-            console.log(user)
-            await this.db.insert({ ...user, uuid: uuidv4(), password: await hashPassword(user.password) }).into(this.table);
+            await this.db.insert({ ...user, uuid: uuidv4(), password: await hashPassword(user.password) }).into(this.table).onConflict("email").merge({
+                role: this.db.raw('VALUES(role)'),           // Keep the new `role`
+                isVerfied: this.db.raw('VALUES(isVerfied)'), // Keep the new `isVerified`
+                updated_at: this.db.fn.now(),                // Always update the `updated_at`
+                is_enabled: this.db.raw('VALUES(is_enabled)') // Keep the new `is_enabled`
+                // Excluding `id` and `password` from being updated
+            }).returning("*");
+            return await this.findByEmail(user.email);
         } catch (error) {
             console.log("Error while saving user", error);
         }
