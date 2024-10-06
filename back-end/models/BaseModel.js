@@ -13,6 +13,10 @@ class BaseModel {
             }
         })
     }
+
+    async findById(id) {
+        return await this.db.where({id, is_enabled: true}).first();
+    }
 }
 
 module.exports = BaseModel;

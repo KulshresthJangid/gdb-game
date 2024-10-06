@@ -3,9 +3,10 @@ const AUTH_ROUTES = {
     REGISTER: '/api/v1/register',
     OTP_VERIFY: '/api/v1/otp-verify',
     TOKEN_VERIFY: '/api/v1/token-verify',
+    RESEND_OTP: '/api/v1/resend-otp',
 }
 
-const OPEN_ROUTES = [AUTH_ROUTES.LOGIN, AUTH_ROUTES.REGISTER, AUTH_ROUTES.OTP_VERIFY]; 
+const OPEN_ROUTES = [AUTH_ROUTES.LOGIN, AUTH_ROUTES.REGISTER, AUTH_ROUTES.OTP_VERIFY, AUTH_ROUTES.RESEND_OTP]; 
 
 const TABLES = {
     USERS: 'users',
