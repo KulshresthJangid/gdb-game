@@ -6,11 +6,12 @@ const AUTH_ROUTES = {
     RESEND_OTP: '/api/v1/resend-otp',
 }
 
-const OPEN_ROUTES = [AUTH_ROUTES.LOGIN, AUTH_ROUTES.REGISTER, AUTH_ROUTES.OTP_VERIFY, AUTH_ROUTES.RESEND_OTP]; 
+const OPEN_ROUTES = [AUTH_ROUTES.LOGIN, AUTH_ROUTES.REGISTER, AUTH_ROUTES.OTP_VERIFY, AUTH_ROUTES.RESEND_OTP];
 
 const TABLES = {
     USERS: 'users',
-    OTP: 'otp'
+    OTP: 'otp',
+    TRANSACTIONS: 'transactions'
 }
 
 module.exports = {
