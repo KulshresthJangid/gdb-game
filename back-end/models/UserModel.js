@@ -4,6 +4,7 @@ const { hashPassword } = require("../utils/authUtils");
 const { v4: uuidv4 } = require('uuid');
 const BaseModel = require("./BaseModel");
 const { TABLES } = require("../Constants/APIs");
+const { Knex } = require("knex");
 
 class UserModel extends BaseModel {
     constructor() {
@@ -12,12 +13,12 @@ class UserModel extends BaseModel {
 
     async save(user) {
         try {
-            await this.db.insert({ ...user, uuid: uuidv4(), password: await hashPassword(user.password) }).into(this.table).onConflict("email").merge({
-                role: this.db.raw('VALUES(role)'),           // Keep the new `role`
-                isVerfied: this.db.raw('VALUES(isVerfied)'), // Keep the new `isVerified`
-                updated_at: this.db.fn.now(),                // Always update the `updated_at`
-                is_enabled: this.db.raw('VALUES(is_enabled)') // Keep the new `is_enabled`
-                // Excluding `id` and `password` from being updated
+            await this.db.insert({ ...user, uuid: uuidv4(), password: await hashPassword(user.password), updated_at: new Date() }).into(this.table).onConflict("email").merge({
+                role: this.db.raw('VALUES(role)'),
+                isVerfied: this.db.raw('VALUES(isVerfied)'),
+                updated_at: this.db.raw(`VALUES(updated_at)`),
+                is_enabled: this.db.raw('VALUES(is_enabled)'),
+                balance: this.db.raw('VALUES(balance)')
             }).returning("*");
             return await this.findByEmail(user.email);
         } catch (error) {
