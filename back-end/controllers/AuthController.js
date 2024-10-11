@@ -7,6 +7,7 @@ const UserModel = require('../models/UserModel');
 const { isCorrectPassword, generateAuthToken, hashPassword } = require('../utils/authUtils');
 const OTPModel = require('../models/OTPModel');
 const { sendOTPEmail } = require('../utils/mailer');
+const BalanceService = require('../services/BalanceService');
 
 class AuthController extends BaseController {
     constructor() {
@@ -46,9 +47,16 @@ class AuthController extends BaseController {
 
     async register(req, res) {
         let user = (({ name, email, password, role }) => ({ name, email, password, role }))(req.body);
-        user = await UserModel.save(user);
-        await sendOTPEmail(user);
-        res.status(200).send(new APIResponse(200, "User registered successfully please Login!!", null, true));
+        let existingUser = await UserModel.findByEmail(user.email);
+        if (!existingUser) {
+            user = await UserModel.save(user);
+            await sendOTPEmail(user);
+            await BalanceService.initiateRuleForNewUser(user);
+            res.status(200).send(new APIResponse(200, "User registered successfully please Login!!", null, true));
+        } else {
+            res.status(200).send(new APIResponse(200, "User already Exists Please Login!!", null, true));
+        }
+
     }
 
     async otpVerify(req, res) {
