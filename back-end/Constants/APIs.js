@@ -14,8 +14,14 @@ const TABLES = {
     TRANSACTIONS: 'transactions'
 }
 
+const AMOUNT_OPERATIONS = {
+    ADD: 'add',
+    DEDUCT: 'deduct'
+}
+
 module.exports = {
     AUTH_ROUTES,
     TABLES,
-    OPEN_ROUTES
+    OPEN_ROUTES,
+    AMOUNT_OPERATIONS,
 }
