@@ -13,6 +13,7 @@ class BaseController {
         if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
             token = req.headers.authorization.split(' ')[1];
         }
+        console.log("token", token)
         return await getUserFromToken(token);
     }
 }

@@ -14,6 +14,7 @@ exports.up = function (knex) {
                 table.integer('user_id').unsigned().notNullable();
                 table.integer('approved_by').unsigned();
                 table.string('txn_id').notNullable();
+                table.integer('amount').notNullable().defaultTo(0);
 
                 table.foreign('user_id').references('id').inTable(TABLES.USERS).onDelete('CASCADE');
                 table.foreign('approved_by').references('id').inTable(TABLES.USERS).onDelete('CASCADE');

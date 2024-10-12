@@ -1,9 +1,21 @@
+const CORE_API = '/api/v1'
+
 const AUTH_ROUTES = {
-    LOGIN: '/api/v1/login',
-    REGISTER: '/api/v1/register',
-    OTP_VERIFY: '/api/v1/otp-verify',
-    TOKEN_VERIFY: '/api/v1/token-verify',
-    RESEND_OTP: '/api/v1/resend-otp',
+    LOGIN: CORE_API + '/login',
+    REGISTER: CORE_API + '/register',
+    OTP_VERIFY: CORE_API + '/otp-verify',
+    TOKEN_VERIFY: CORE_API + '/token-verify',
+    RESEND_OTP: CORE_API + '/resend-otp',
+}
+
+const TRANSACTION_ROUTES = {
+    TRANSACTION: CORE_API + '/transaction'
+}
+
+const TRANSACTION_REQ = {
+    ADD: 'ADD',
+    UPDATE: 'UPDATE'
+
 }
 
 const OPEN_ROUTES = [AUTH_ROUTES.LOGIN, AUTH_ROUTES.REGISTER, AUTH_ROUTES.OTP_VERIFY, AUTH_ROUTES.RESEND_OTP];
@@ -24,4 +36,5 @@ module.exports = {
     TABLES,
     OPEN_ROUTES,
     AMOUNT_OPERATIONS,
+    TRANSACTION_ROUTES, TRANSACTION_REQ
 }

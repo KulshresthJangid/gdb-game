@@ -1,8 +1,8 @@
 const { OPEN_ROUTES } = require("../Constants/APIs");
 const APIResponse = require("../DTOs/APIResponse");
-const { validateAuthToken } = require("../utils/authUtils");
+const { validateAuthToken, getUserFromToken } = require("../utils/authUtils");
 
-const intercept = async (req, res, next) => {
+const authGuard = async (req, res, next) => {
     // await OPEN_ROUTES.forEach(el => {
     //     console.log("requset pasth", req.path, el)
     //     if (req.path == el) {
@@ -18,6 +18,7 @@ const intercept = async (req, res, next) => {
 
     let token = req.headers?.authorization?.split(" ")[1];
     if (token && validateAuthToken(token)) {
+        req.user = await getUserFromToken(token);
         next();
         return;
     } else {
@@ -26,4 +27,4 @@ const intercept = async (req, res, next) => {
     }
 }
 
-module.exports = { intercept }
+module.exports = { intercept: authGuard }

@@ -36,7 +36,6 @@ class UserModel extends BaseModel {
         } catch (err) {
             console.log("Error while getting the user by email", err);
         }
-
     }
 }
 

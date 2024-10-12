@@ -24,24 +24,27 @@ class AuthController extends BaseController {
     }
 
     async login(req, res) {
-        const { email, password } = req.body;
-        const user = await UserModel.findByEmail(email);
+        try {
+            const { email, password } = req.body;
+            const user = await UserModel.findByEmail(email);
 
-        if (!user) {
-            return res.status(401).send(new APIResponse(401, "Invalid email or Password!!", null, false));
-        }
-
-        console.log("Stored user password hash:", user.password);
-
-        if (await isCorrectPassword(password, user.password)) {
-            if (user.isVerfied) {
-                const token = await generateAuthToken(user);
-                return res.status(200).send(new APIResponse(200, "User Logged In Successfully!!", { token }, true));
-            } else {
-                return res.status(401).send(new APIResponse(401, "Please Verify First!!", null, false));
+            if (!user) {
+                return res.status(401).send(new APIResponse(401, "Invalid email or Password!!", null, false));
             }
-        } else {
-            return res.status(401).send(new APIResponse(401, "Invalid email or Password!!", null, false));
+
+            if (await isCorrectPassword(password, user.password)) {
+                if (user.isVerfied) {
+                    const token = await generateAuthToken({ id: user.id, email: user.email, role: user.role, });
+                    return res.status(200).send(new APIResponse(200, "User Logged In Successfully!!", { token }, true));
+                } else {
+                    return res.status(401).send(new APIResponse(401, "Please Verify First!!", null, false));
+                }
+            } else {
+                return res.status(401).send(new APIResponse(401, "Invalid email or Password!!", null, false));
+            }
+        } catch (error) {
+            console.error("Error while user Login!!", error);
+            return res.status(500).send(new APIResponse(500, "Internal Server Error!!", null, false));
         }
     }
 
